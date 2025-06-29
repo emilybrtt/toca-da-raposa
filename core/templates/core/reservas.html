@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservas - TocaWash</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    h2 { color: #333; }
+    label, select, button { margin-top: 10px; display: block; }
+    .turnos, .maquinas { margin-top: 20px; }
+    .turno-btn, .maquina-btn {
+      margin: 5px;
+      padding: 10px;
+      background: #ff6700;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .turno-btn.selected, .maquina-btn.selected {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Fazer reserva</h2>
+
+  <label for="data">Escolha a data:</label>
+  <input type="date" id="data" />
+
+  <div class="turnos">
+    <h3>Escolha o turno:</h3>
+    <button class="turno-btn" data-block="06-10">06h–10h</button>
+    <button class="turno-btn" data-block="10-14">10h–14h</button>
+    <button class="turno-btn" data-block="14-18">14h–18h</button>
+    <button class="turno-btn" data-block="18-22">18h–22h</button>
+  </div>
+
+  <div class="maquinas">
+    <h3>Máquinas disponíveis:</h3>
+    <div id="maquinas-container">Selecione data e turno.</div>
+  </div>
+
+  <button id="reservar-btn" style="display:none;">Reservar</button>
+
+  <p id="mensagem"></p>
+
+  <script>
+    let selectedTurno = null;
+    let selectedMachine = null;
+
+    document.querySelectorAll('.turno-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedTurno = btn.getAttribute('data-block');
+        document.querySelectorAll('.turno-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        buscarMaquinas();
+      });
+    });
+
+    document.getElementById('data').addEventListener('change', buscarMaquinas);
+
+    function buscarMaquinas() {
+      selectedMachine = null;
+      document.getElementById('reservar-btn').style.display = 'none';
+
+      const data = document.getElementById('data').value;
+      if (!data || !selectedTurno) return;
+
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:8000/api/available-slots/?date=${data}`, {
+        headers: { Authorization: `Token ${token}` }
+      })
+      .then(res => res.json())
+      .then(dados => {
+        const [horaInicio, horaFim] = selectedTurno.split("-");
+        const chave = `${horaInicio}h–${horaFim}h`;
+        const maquinas = dados.slots[chave];
+
+        const container = document.getElementById('maquinas-container');
+        container.innerHTML = '';
+
+        if (!maquinas || maquinas.length === 0) {
+          container.innerText = 'Nenhuma máquina disponível.';
+          return;
+        }
+
+        maquinas.forEach(m => {
+          const btn = document.createElement('button');
+          btn.innerText = `Máquina ${m.number}`;
+          btn.className = 'maquina-btn';
+          btn.addEventListener('click', () => {
+            selectedMachine = m.id;
+            document.querySelectorAll('.maquina-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('reservar-btn').style.display = 'block';
+          });
+          container.appendChild(btn);
+        });
+      });
+    }
+
+    document.getElementById('reservar-btn').addEventListener('click', () => {
+      const data = document.getElementById('data').value;
+      const token = localStorage.getItem('token');
+
+      fetch('http://localhost:8000/api/reservations/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`
+        },
+        body: JSON.stringify({
+          machine_id: selectedMachine,
+          date: data,
+          time_block: selectedTurno
+        })
+      })
+      .then(res => res.json())
+      .then(dados => {
+        const msg = document.getElementById('mensagem');
+        if (dados.id) {
+          msg.style.color = 'green';
+          msg.innerText = 'Reserva feita com sucesso!';
+        } else {
+          msg.style.color = 'red';
+          msg.innerText = dados.non_field_errors ? dados.non_field_errors[0] : 'Erro na reserva.';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
