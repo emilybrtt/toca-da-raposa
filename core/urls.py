@@ -3,9 +3,6 @@ from .views import MachineViewSet, ReservationViewSet
 from django.urls import path
 from .views import tela_login, available_slots, tela_reservas
 
-
-
-
 router = DefaultRouter()
 router.register(r'machines', MachineViewSet)
 router.register(r'reservations', ReservationViewSet)

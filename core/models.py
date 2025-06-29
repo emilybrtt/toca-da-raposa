@@ -1,9 +1,6 @@
-from django.db import models
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Customização do usuário
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100)
@@ -14,7 +11,7 @@ class User(AbstractUser):
     def __str__(self):
         return self.full_name
 
-# Máquinas de lavar
+
 class Machine(models.Model):
     number = models.PositiveIntegerField(unique=True)
     has_dryer = models.BooleanField(default=False)
@@ -22,7 +19,6 @@ class Machine(models.Model):
     def __str__(self):
         return f"Máquina {self.number}"
 
-# Blocos de horário fixos
 TIME_BLOCKS = [
     ("06-10", "06h–10h"),
     ("10-14", "10h–14h"),
@@ -30,7 +26,7 @@ TIME_BLOCKS = [
     ("18-22", "18h–22h"),
 ]
 
-# Reservas de horários
+
 class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reservations")
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name="reservations")
@@ -40,7 +36,7 @@ class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'date')  # Só 1 reserva por dia por usuário
+        unique_together = ('user', 'date') 
         ordering = ['date', 'time_block']
 
     def __str__(self):
