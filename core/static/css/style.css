@@ -14,7 +14,7 @@
       justify-content: center;
     }
 
-    .container {
+    .login_container {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
       border-radius: 20px;
@@ -27,14 +27,15 @@
       overflow: hidden;
     }
 
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: #ff8c42;
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .header {
