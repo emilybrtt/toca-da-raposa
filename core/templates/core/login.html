@@ -4,20 +4,309 @@
   <meta charset="UTF-8">
   <title>Login - TocaWash</title>
   <style>
-    body { font-family: Arial; background: #f6f6f6; padding: 40px; }
-    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; padding: 10px; margin-top: 10px; font-size: 16px; }
-    button { background-color: #ff6700; color: white; border: none; cursor: pointer; }
-    button:hover { background-color: #e35a00; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:  #8b8b8b ;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 450px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #ff6700, #ff8c42);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h2 {
+      color: #333;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ff6700, #ff8c42);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      color: #333;
+      font-family: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ff6700;
+      box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.1);
+      transform: translateY(-1px);
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    button {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #ff6700, #ff8c42);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255, 103, 0, 0.4);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #mensagem {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      min-height: 20px;
+      transition: all 0.3s ease;
+    }
+
+    #mensagem:not(:empty) {
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .login-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #ff6700, #ff8c42);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(255, 103, 0, 0.3);
+    }
+
+    .login-icon::before {
+      content: '🚿';
+      font-size: 2rem;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .forgot-password a {
+      color: #ff6700;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password a:hover {
+      color: #e35a00;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        margin: 10px;
+        padding: 30px 20px;
+      }
+      
+      .header h2 {
+        font-size: 2rem;
+      }
+      
+      button {
+        font-size: 1.1rem;
+      }
+    }
+
+    .security-note {
+      background: rgba(255, 103, 0, 0.1);
+      border: 2px solid rgba(255, 103, 0, 0.2);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: center;
+      color: #ff6700;
+      font-size: 0.9rem;
+    }
+
+    .form-floating {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .form-floating input {
+      padding-top: 25px;
+      padding-bottom: 10px;
+    }
+
+    .form-floating label {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      color: #999;
+      font-weight: 400;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      margin-bottom: 0;
+    }
+
+    .form-floating input:focus + label,
+    .form-floating input:not(:placeholder-shown) + label {
+      top: 8px;
+      font-size: 0.8rem;
+      color: #ff6700;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Login - TocaWash</h2>
-    <input type="email" id="email" placeholder="Seu e-mail">
-    <input type="password" id="password" placeholder="Sua senha">
-    <button onclick="login()">Entrar</button>
-    <p id="mensagem" style="color: red;"></p>
+    <div class="header">
+      <div class="login-icon"></div>
+      <h2>TocaWash</h2>
+      <p>Faça login para continuar</p>
+    </div>
+
+    <div class="form-floating">
+      <input type="email" id="email" placeholder=" " required>
+      <label for="email">Seu e-mail</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="password" id="password" placeholder=" " required>
+      <label for="password">Sua senha</label>
+    </div>
+
+    <button onclick="login()" id="login-btn">Entrar</button>
+
+    <div class="forgot-password">
+      <a href="#" onclick="forgotPassword()">Esqueceu sua senha?</a>
+    </div>
+
+    <div id="mensagem"></div>
+
   </div>
 
   <script>
@@ -25,22 +314,81 @@
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const mensagem = document.getElementById("mensagem");
+      const loginBtn = document.getElementById("login-btn");
 
-      const response = await fetch("http://localhost:8000/api/auth/token/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
+      // Validação básica
+      if (!email || !password) {
+        mensagem.style.color = '#dc3545';
+        mensagem.style.background = 'rgba(220, 53, 69, 0.1)';
+        mensagem.style.border = '2px solid rgba(220, 53, 69, 0.2)';
+        mensagem.innerText = '❌ Por favor, preencha todos os campos.';
+        return;
+      }
 
-      const data = await response.json();
+      // Estado de loading
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="loading"></span>Entrando...';
+      mensagem.innerText = '';
 
-      if (response.ok) {
-        localStorage.setItem("token", data.auth_token);
-        mensagem.style.color = "green";
-        mensagem.innerText = "Login feito com sucesso!";
-        window.location.href = "reservas.html"; // próxima tela
-      } else {
-        mensagem.innerText = data.non_field_errors ? data.non_field_errors[0] : "Erro no login";
+      try {
+        const response = await fetch("http://localhost:8000/api/auth/token/login/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.auth_token);
+          mensagem.style.color = '#28a745';
+          mensagem.style.background = 'rgba(40, 167, 69, 0.1)';
+          mensagem.style.border = '2px solid rgba(40, 167, 69, 0.2)';
+          mensagem.innerText = "✅ Login feito com sucesso! Redirecionando...";
+          
+          // Pequeno delay para mostrar a mensagem antes de redirecionar
+          setTimeout(() => {
+            window.location.href = "http://localhost:8000/reservas/";
+          }, 1500);
+        } else {
+          mensagem.style.color = '#dc3545';
+          mensagem.style.background = 'rgba(220, 53, 69, 0.1)';
+          mensagem.style.border = '2px solid rgba(220, 53, 69, 0.2)';
+          mensagem.innerText = "❌ " + (data.non_field_errors ? data.non_field_errors[0] : "Erro no login");
+        }
+      } catch (error) {
+        mensagem.style.color = '#dc3545';
+        mensagem.style.background = 'rgba(220, 53, 69, 0.1)';
+        mensagem.style.border = '2px solid rgba(220, 53, 69, 0.2)';
+        mensagem.innerText = "❌ Erro de conexão. Tente novamente.";
+      } finally {
+        // Restaurar botão
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = 'Entrar';
+      }
+    }
+
+    function forgotPassword() {
+      alert('Funcionalidade de recuperação de senha será implementada em breve!');
+    }
+
+    // Enter key para submeter o form
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        login();
+      }
+    });
+
+    // Limpar mensagem quando começar a digitar
+    document.getElementById('email').addEventListener('input', clearMessage);
+    document.getElementById('password').addEventListener('input', clearMessage);
+
+    function clearMessage() {
+      const mensagem = document.getElementById('mensagem');
+      if (mensagem.innerText) {
+        mensagem.innerText = '';
+        mensagem.style.background = '';
+        mensagem.style.border = '';
       }
     }
   </script>

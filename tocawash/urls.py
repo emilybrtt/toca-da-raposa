@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls')),  # se estiver usando Djoser
     path('api/auth/', include('djoser.urls.authtoken')),  # para login via token
     path('login/', tela_login ),
-    path('reservas', tela_reservas),  
+    path('reservas/', tela_reservas),  
 
 
 
