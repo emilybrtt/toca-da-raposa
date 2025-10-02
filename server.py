@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template_string
-
+from flask import Flask, request, render_template
+from utils import connect_db
 
 app = Flask(__name__) 
 
@@ -7,8 +7,12 @@ app = Flask(__name__)
 def index(): 
     print(request.method) 
     print(request.headers)
-    
-    return render_template_string('index.html')
+    connect_db()
+    return render_template('index.html')
+
+@app.route('/login') 
+def login():
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(debug=True) 

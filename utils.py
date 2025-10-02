@@ -21,6 +21,7 @@ config = {
 def connect_db():
     try:
         conn = mysql.connector.connect(**config)
+        print("Conexão bem-sucedida ao banco de dados MySQL")
         if conn.is_connected():
             return conn
     except Error as err:
